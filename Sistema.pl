@@ -10,11 +10,11 @@
 resource(tabla,image,image('tabla.jpg')).
 resource(alimentacion, image, image('alimentacion2.jpg')).
 resource(actividad, image, image('actividad2.jpg')).
-resource(embarazo, image, image('embarazo.jpg')).
+resource(embarazo, image, image('embarazo2.jpg')).
 resource(familia, image, image('familia2.jpg')).
-resource(tabaco, image, image('tabaco.jpg')).
+resource(hipertension, image, image('hiper.jpg')).
 resource(portada, image, image('inicio.jpg')).
-
+resource(gestacional, image, image('gestacional.jpg')).
 
 %Funcion para el redondeo de numeros decimales
 truncate(X,N,Result):- X >= 0, Result is floor(10^N*X)/10^N, !.
@@ -121,7 +121,7 @@ la semana durante 30 minutos al día como mínimo?
     send(Op, layout, orientation:= vertical),
     send(Op, append, 'ninguna vez'), send(Op,append,'1 a 3 veces por semana'),
     send(Op,append,'3 a 5 veces por semana'), send(Op,append,'toda la semana'),
-    send(R,append,Op,point(60,180)),
+    send(R,display,Op,point(60,180)),
     new(@reglaTres,button('Siguiente',and(message(@prolog,reglaFamilia,Op?selection),message(Window,destroy),message(Window,free)))),
     send(R,display,@reglaTres, point(300,290)),
     send(Window, open_centered).
@@ -148,7 +148,7 @@ u otros parientes?', font('Arial', 'roman', 13))),
     send(Op, layout, orientation:= vertical),
     send(Op, append, 'si, padres, hermanos, o hijos'), send(Op,append,'si, abuelos, tios o primos'),
     send(Op,append,'no, ninguno'),
-    send(R,append,Op,point(60,140)),
+    send(R,display,Op,point(60,140)),
     new(@reglaCuatro,button('Siguiente',and(message(@prolog,reglaHipertension,Op?selection),message(Window,destroy),message(Window,free)))),
     send(R,display,@reglaCuatro, point(280,270)),
     send(Window, open_centered).
@@ -169,9 +169,9 @@ u otros parientes?', font('Arial', '', 1311111111111111111111111))),
     send(Op, layout, orientation:= vertical),
     send(Op, append, 'si, padres, hermanos, o hijos'), send(Op,append,'si, abuelos, tios o primos'),
     send(Op,append,'no, ninguno'),
-    send(R,append,Op,point(60,140)),
+    send(R,display,Op,point(60,140)),
     new(@reglaCuatro,button('Siguiente',and(message(@prolog,reglaHipertension,Op?selection),message(Window,destroy),message(Window,free)))),
-    send(Window,display,@reglaCuatro, point(280,270)),
+    send(R,display,@reglaCuatro, point(280,270)),
     send(Window, open_centered).
 
 %Regla Hipertension
@@ -180,21 +180,23 @@ reglaHipertension('si, padres, hermanos, o hijos'):-
 reglaHipertension('si, abuelos, tios o primos'):-
      send(@result, selection('EXISTE LA PROBABILIDAD\n DE QUE USTED TENGA DIABETES')).
 reglaHipertension('no, ninguno'):-
-     new(Window, dialog('Hipertension')),
+    new(Window, dialog('Hipertension')),
     send(Window, size, size(750,320)),
     new(L, dialog_group('')),
+    send(L,size,size(400,320)),
     new(R, dialog_group('')),
+    send(R,size,size(350,320)),
     send(Window,append,L),
     send(Window, append, R, right),
-    new(Preg, label(nombre, 'Su presion arterial es alta?', font('times', 'roman', 14))),
-    send(R, display, Preg),
-    show_picture(L,tabaco),
+    new(Preg, label(nombre, '¿Tiene la presion arterial alta?', font('Arial','',13))),
+    send(R, display, Preg,point(30,40)),
+    show_picture(L,hipertension),
     new(Op, menu(seleccione, marked)),
     send(Op, layout, orientation:= vertical),
     send(Op, append, 'Si'), send(Op,append,'No'),
-    send(R,append,Op),
+    send(R,display,Op,point(60,120)),
     new(@reglaCinco,button('Siguiente',and(message(@prolog,reglaEmbarazo,Op?selection),message(Window,destroy),message(Window,free)))),
-    send(Window,display,@reglaCinco, point(350,300)),
+    send(R,display,@reglaCinco, point(240,270)),
     send(Window, open_centered).
 
 %Regla Embarazo
@@ -204,18 +206,20 @@ reglaEmbarazo('Si'):-
      new(Window, dialog('Embarazo')),
     send(Window, size, size(750,320)),
     new(L, dialog_group('')),
+    send(L,size,size(400,320)),
     new(R, dialog_group('')),
+    send(R,size,size(350,320)),
     send(Window,append,L),
     send(Window, append, R, right),
-    new(Preg, label(nombre, 'Ah estado embarazada?', font('times', 'roman', 14))),
-    send(R, display, Preg),
+    new(Preg, label(nombre, '¿Ah estado embarazada?', font('Arial', '', 13))),
+    send(R, display, Preg, point(20,35)),
     show_picture(L,embarazo),
     new(Op, menu(seleccione, marked)),
     send(Op, layout, orientation:= vertical),
     send(Op, append, 'Si'), send(Op,append,'No'),
-    send(R,append,Op),
+    send(R,display,Op,point(50,100)),
     new(@reglaSeis,button('Siguiente',and(message(@prolog,reglaGestacional,Op?selection),message(Window,destroy),message(Window,free)))),
-    send(Window,display,@reglaSeis, point(350,300)),
+    send(R,display,@reglaSeis, point(250,270)),
     send(Window, open_centered).
 
 %Regla Embarazo Gestacional
@@ -225,18 +229,20 @@ reglaGestacional('Si'):-
      new(Window, dialog('Diabetes Gestacional')),
     send(Window, size, size(750,320)),
     new(L, dialog_group('')),
+    send(L,size,size(400,320)),
     new(R, dialog_group('')),
+    send(R,size,size(350,320)),
     send(Window,append,L),
     send(Window, append, R, right),
-    new(Preg, label(nombre, 'Padecio de Diabetes Gestacional durante\n su embarazo?', font('times', 'roman', 14))),
-    send(R, display, Preg),
-    show_picture(L,embarazo),
+    new(Preg, label(nombre, '¿Padecio de Diabetes Gestacional durante\n su embarazo?', font('Arial', '', 13))),
+    send(R, display, Preg, point(20,35)),
+    show_picture(L,gestacional),
     new(Op, menu(seleccione, marked)),
     send(Op, layout, orientation:= vertical),
     send(Op, append, 'Si'), send(Op,append,'No'),
-    send(R,append,Op),
+    send(R,display,Op,point(50,100)),
     new(@reglaSiete,button('Siguiente',and(message(@prolog,reglaEsp,Op?selection),message(Window,destroy),message(Window,free)))),
-    send(Window,display,@reglaSiete, point(350,300)),
+    send(R,display,@reglaSiete, point(260,270)),
     send(Window, open_centered).
 
 
