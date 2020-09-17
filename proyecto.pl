@@ -30,17 +30,17 @@ show_picture(Window, Image):-
 %Regla para obesidad
 reglaObesidad:-
     new(Window, dialog('Indice de Masa Corporal')),
-    send(Window, size, size(750,300)),
+    send(Window, size, size(750,320)),
     new(L, dialog_group('')),
     new(R, dialog_group('')),
     send(Window,append,L),
     send(Window, append, R, right),
-    new(Preg, label(nombre, 'El Indice de masa corporal (IMC) es un indicador de gordura confiable para las personas\n
+    new(Preg, label(nombre, 'El Indice de masa corporal (IMC) es\n un indicador de gordura confiable para las personas\n
 Se considera que un adulto está en sobrepeso si tiene un
 IMC de entre los 25 y 29.9 kg/m2 y es
 obeso si posee un IMC superior a 30kg/m2.\n
 (IMC = peso[kg]/estatura[m2]).
-')),
+', font('times', 'roman', 14))),
     send(R, display, Preg),
     show_picture(L,tabla),
     new(@pesoItem, text_item('Peso en Kilogramos:')),
@@ -53,6 +53,8 @@ obeso si posee un IMC superior a 30kg/m2.\n
     send(R, append, @indice),
     new(Calc, button('Calcular IMC', message(@prolog,imc))),
     send(R, append, Calc),
+    new(@reglaUno,button('Siguiente',and(message(@prolog,reglaAlimentacion),message(Window,destroy),message(Window,free)))),
+    send(Window,display,@reglaUno, point(350,300)),
     send(Window, open_centered).
 
 %Funcion Para el calculo de IMC
@@ -64,6 +66,27 @@ imc:-
     M is CM/100, Aux is M*M,
     send(@indice, selection((KG/Aux))).
 
+%Regla para alimentacion
+reglaAlimentacion:-
+    new(Window, dialog('Alimentacion')),
+    send(Window, size, size(750,320)),
+    new(L, dialog_group('')),
+    new(R, dialog_group('')),
+    send(Window,append,L),
+    send(Window, append, R, right),
+    new(Preg, label(nombre, 'Una dieta sana es la\n combinación adecuanda de alimentos de diferentes\n grupos como son las frutas,verduras,\n legumbres (como lentejas y alubias),\n
+cereales integrales (como maíz, avena, trigo),\n lácteos, carnes y la poca cantidad\n de grasas saturadas.\n
+¿Considera que su alimentación diaria es saludable?
+', font('times', 'roman', 14))),
+    send(R, display, Preg),
+    show_picture(L,alimentacion),
+    new(Op, menu(seleccione, marked)),
+    send(Op, layout, orientation:= vertical),
+    send(Op, append,si), send(Op,append,no),
+    send(R,append,Op),
+    new(@reglaDos,button('Siguiente',and(message(@prolog,reglaAlimentacion),message(Window,destroy),message(Window,free)))),
+    send(Window,display,@reglaDos, point(350,300)),
+    send(Window, open_centered).
 
 %Definicion de la funcion principal
 main:-
@@ -71,6 +94,7 @@ main:-
     send(Window, size, size(250,250)),
     new(@inicio,button('Iniciar Diagnostico', message(@prolog,reglaObesidad))),
     send(Window, append, @inicio),
+
     new(BtnSalir, button('Salir', and(message(Window,destroy),message(Window,free)))),
     send(Window,display,BtnSalir, point(200,230)),
     send(Window,open_centered).
