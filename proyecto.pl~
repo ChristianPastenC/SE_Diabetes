@@ -8,6 +8,11 @@
 :- use_module(library(pce_style_item)).
 
 resource(tabla,image,image('tablaIMC.jpeg')).
+resource(alimentacion, image, image('alimentacion.jpg')).
+resource(ejercicio, image, image('ejercicio.jpg')).
+resource(embarazo, image, image('emabarazo.jpg')).
+resource(familia, image, image('familia.jpg')).
+resource(tabaco, image, image('tabaco.jpg')).
 
 %Funcion para el redondeo de numeros decimales
 truncate(X,N,Result):- X >= 0, Result is floor(10^N*X)/10^N, !.
@@ -21,12 +26,6 @@ main:-
     send(Window,append,L),
     send(Window, append, R, right),
 
-    new(Fig, figure),
-    new(Bitmap, bitmap(resource(tabla),@on)),
-    send(Bitmap, name, 1),
-    send(Fig,display,Bitmap),
-    send(Fig,status,1),
-    send(L,display,Fig),
 
     new(@pesoItem, text_item('Peso en Kilogramos:')),
     send(R,append,@pesoItem),
@@ -44,7 +43,7 @@ main:-
 
     send(Window,open_centered).
 
-%Funcion para el calculo de IMC
+%Funcion Para el calculo de IMC
 imc:-
     get(@pesoItem,selection,AuxKG),
     get(@alturaItem,selection,AuxCM),
@@ -52,6 +51,17 @@ imc:-
     atom_number(AuxCM, CM),
     M is CM/100, Aux is M*M,
     send(@indice, selection((KG/Aux))).
+
+
+%Funcion para mostrar una imagen
+show_picture(Window, Image):-
+    new(Fig, figure),
+    new(Bitmap, bitmap(resource(Image),@on)),
+    send(Bitmap, name, 1),
+    send(Fig,display,Bitmap),
+    send(Fig,status,1),
+    send(Window,display,Fig).
+
 
 
 

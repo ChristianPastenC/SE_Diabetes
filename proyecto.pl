@@ -26,13 +26,6 @@ main:-
     send(Window,append,L),
     send(Window, append, R, right),
 
-    new(Fig, figure),
-    new(Bitmap, bitmap(resource(tabla),@on)),
-    send(Bitmap, name, 1),
-    send(Fig,display,Bitmap),
-    send(Fig,status,1),
-    send(L,display,Fig),
-
     new(@pesoItem, text_item('Peso en Kilogramos:')),
     send(R,append,@pesoItem),
     new(@alturaItem, text_item('Altura en centimetros')),
@@ -57,6 +50,17 @@ imc:-
     atom_number(AuxCM, CM),
     M is CM/100, Aux is M*M,
     send(@indice, selection((KG/Aux))).
+
+
+%Funcion para mostrar una imagen
+show_picture(Window, Image):-
+    new(Fig, figure),
+    new(Bitmap, bitmap(resource(Image),@on)),
+    send(Bitmap, name, 1),
+    send(Fig,display,Bitmap),
+    send(Fig,status,1),
+    send(Window,display,Fig).
+
 
 
 
