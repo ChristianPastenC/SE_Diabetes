@@ -9,9 +9,9 @@
 
 resource(tabla,image,image('tabla.jpg')).
 resource(alimentacion, image, image('alimentacion2.jpg')).
-resource(ejercicio, image, image('ejercicio.jpg')).
+resource(actividad, image, image('actividad2.jpg')).
 resource(embarazo, image, image('embarazo.jpg')).
-resource(familia, image, image('familia.jpg')).
+resource(familia, image, image('familia2.jpg')).
 resource(tabaco, image, image('tabaco.jpg')).
 resource(portada, image, image('inicio.jpg')).
 
@@ -103,24 +103,27 @@ reglaActividad:-
     new(Window, dialog('Actividad Fisica')),
     send(Window, size, size(750,320)),
     new(L, dialog_group('')),
+    send(L,size,size(330,320)),
     new(R, dialog_group('')),
+    send(R,size,size(420,320)),
     send(Window,append,L),
     send(Window, append, R, right),
-    new(Preg, label(nombre, 'Se considera como actividad fÃ­sica cualquier movimiento corporal
-producido por los mÃºsculos que exija gasto de energÃ­a.
-Por ejemplo: correr, caminar, saltar, practicar un deporte etc.
-Â¿QuÃ© tan frecuente realiza actividad fÃ­sica a la semana
-durante 30 minutos al dÃ­a como mÃ­nimo?
-', font('times', 'roman', 14))),
-    send(R, display, Preg),
-    show_picture(L,ejercicio),
+    new(Preg, label(nombre, 'Se considera como actividad física cualquier
+movimiento corporal producido por los músculos que
+exija gasto de energía. Por ejemplo: correr, caminar,
+saltar, practicar un deporte etc.\n
+¿Qué tan frecuente realiza actividad física a
+la semana durante 30 minutos al día como mínimo?
+', font('Arial', '', 12.5))),
+    send(R, display, Preg,point(35,35)),
+    show_picture(L,actividad),
     new(Op, menu(seleccione, marked)),
     send(Op, layout, orientation:= vertical),
     send(Op, append, 'ninguna vez'), send(Op,append,'1 a 3 veces por semana'),
     send(Op,append,'3 a 5 veces por semana'), send(Op,append,'toda la semana'),
-    send(R,append,Op),
+    send(R,append,Op,point(60,180)),
     new(@reglaTres,button('Siguiente',and(message(@prolog,reglaFamilia,Op?selection),message(Window,destroy),message(Window,free)))),
-    send(Window,display,@reglaTres, point(350,300)),
+    send(R,display,@reglaTres, point(300,290)),
     send(Window, open_centered).
 
 %Regla para los antescedentes familiares
@@ -129,42 +132,46 @@ reglaFamilia('toda la semana'):-
 reglaFamilia('3 a 5 veces por semana'):-
     send(@result,selection('HAY POCA PROBABILIDAD\n DE QUE USTED TENGA DIABETES')).
 reglaFamilia('1 a 3 veces por semana'):-
-     new(Window, dialog('Antecedentes Familiares')),
+    new(Window, dialog('Antecedentes Familiares')),
     send(Window, size, size(750,320)),
     new(L, dialog_group('')),
+    send(L,size,size(360,320)),
     new(R, dialog_group('')),
+    send(R,size,size(390,320)),
     send(Window,append,L),
     send(Window, append, R, right),
-    new(Preg, label(nombre, 'Â¿Se le ha diagnosticado diabetes a\n alguno de sus familiares allegados
-u otros parientes?', font('times', 'roman', 14))),
-    send(R, display, Preg),
+    new(Preg, label(nombre, '¿Se le ha diagnosticado diabetes a\n alguno de sus familiares allegados
+u otros parientes?', font('Arial', 'roman', 13))),
+    send(R, display, Preg,point(35,35)),
     show_picture(L,familia),
     new(Op, menu(seleccione, marked)),
     send(Op, layout, orientation:= vertical),
     send(Op, append, 'si, padres, hermanos, o hijos'), send(Op,append,'si, abuelos, tios o primos'),
     send(Op,append,'no, ninguno'),
-    send(R,append,Op),
+    send(R,append,Op,point(60,140)),
     new(@reglaCuatro,button('Siguiente',and(message(@prolog,reglaHipertension,Op?selection),message(Window,destroy),message(Window,free)))),
-    send(Window,display,@reglaCuatro, point(350,300)),
+    send(R,display,@reglaCuatro, point(280,270)),
     send(Window, open_centered).
 reglaFamilia('ninguna vez'):-
      new(Window, dialog('Antecedentes Familiares')),
     send(Window, size, size(750,320)),
     new(L, dialog_group('')),
+    send(L,size,size(360,320)),
     new(R, dialog_group('')),
+    send(R,size,size(390,320)),
     send(Window,append,L),
     send(Window, append, R, right),
-    new(Preg, label(nombre, 'Â¿Se le ha diagnosticado diabetes a\n alguno de sus familiares allegados
-u otros parientes?', font('times', 'roman', 14))),
+    new(Preg, label(nombre, '¿Se le ha diagnosticado diabetes a\n alguno de sus familiares allegados
+u otros parientes?', font('Arial', '', 1311111111111111111111111))),
     send(R, display, Preg),
     show_picture(L,familia),
     new(Op, menu(seleccione, marked)),
     send(Op, layout, orientation:= vertical),
     send(Op, append, 'si, padres, hermanos, o hijos'), send(Op,append,'si, abuelos, tios o primos'),
     send(Op,append,'no, ninguno'),
-    send(R,append,Op),
+    send(R,append,Op,point(60,140)),
     new(@reglaCuatro,button('Siguiente',and(message(@prolog,reglaHipertension,Op?selection),message(Window,destroy),message(Window,free)))),
-    send(Window,display,@reglaCuatro, point(350,300)),
+    send(Window,display,@reglaCuatro, point(280,270)),
     send(Window, open_centered).
 
 %Regla Hipertension
