@@ -109,9 +109,55 @@ durante 30 minutos al día como mínimo?
     send(Op, append, 'ninguna vez'), send(Op,append,'1 a 3 veces por semana'),
     send(Op,append,'3 a 5 veces por semana'), send(Op,append,'toda la semana'),
     send(R,append,Op),
-    new(@reglaTres,button('Siguiente',and(message(@prolog,reglaActividad),message(Window,destroy),message(Window,free)))),
+    new(@reglaTres,button('Siguiente',and(message(@prolog,reglaFamilia,Op?selection),message(Window,destroy),message(Window,free)))),
     send(Window,display,@reglaTres, point(350,300)),
     send(Window, open_centered).
+
+%Regla para los antescedentes familiares
+reglaFamilia('toda la semana'):-
+    send(@result, selection('HAY POCA PROBABILIDAD\n DE QUE USTED TENGA DIABETES')).
+reglaFamilia('3 a 5 veces por semana'):-
+    send(@result,selection('HAY POCA PROBABILIDAD\n DE QUE USTED TENGA DIABETES')).
+reglaFamilia('1 a 3 veces por semana'):-
+     new(Window, dialog('Antecedentes Familiares')),
+    send(Window, size, size(750,320)),
+    new(L, dialog_group('')),
+    new(R, dialog_group('')),
+    send(Window,append,L),
+    send(Window, append, R, right),
+    new(Preg, label(nombre, '¿Se le ha diagnosticado diabetes a\n alguno de sus familiares allegados
+u otros parientes?', font('times', 'roman', 14))),
+    send(R, display, Preg),
+    show_picture(L,familia),
+    new(Op, menu(seleccione, marked)),
+    send(Op, layout, orientation:= vertical),
+    send(Op, append, 'si, padres, hermanos, o hijos'), send(Op,append,'si, abuelos, tios o primos'),
+    send(Op,append,'no, ninguno'),
+    send(R,append,Op),
+    new(@reglaCuatro,button('Siguiente',and(message(@prolog,reglaFamilia,Op?selection),message(Window,destroy),message(Window,free)))),
+    send(Window,display,@reglaCuatro, point(350,300)),
+    send(Window, open_centered).
+reglaFamilia('ninguna vez'):-
+     new(Window, dialog('Antecedentes Familiares')),
+    send(Window, size, size(750,320)),
+    new(L, dialog_group('')),
+    new(R, dialog_group('')),
+    send(Window,append,L),
+    send(Window, append, R, right),
+    new(Preg, label(nombre, '¿Se le ha diagnosticado diabetes a\n alguno de sus familiares allegados
+u otros parientes?', font('times', 'roman', 14))),
+    send(R, display, Preg),
+    show_picture(L,familia),
+    new(Op, menu(seleccione, marked)),
+    send(Op, layout, orientation:= vertical),
+    send(Op, append, 'si, padres, hermanos, o hijos'), send(Op,append,'si, abuelos, tios o primos'),
+    send(Op,append,'no, ninguno'),
+    send(R,append,Op),
+    new(@reglaCuatro,button('Siguiente',and(message(@prolog,reglaFamilia,Op?selection),message(Window,destroy),message(Window,free)))),
+    send(Window,display,@reglaCuatro, point(350,300)),
+    send(Window, open_centered).
+
+
 
 %Definicion de la funcion principal
 main:-
@@ -119,7 +165,8 @@ main:-
     send(Window, size, size(250,250)),
     new(@inicio,button('Iniciar Diagnostico', message(@prolog,reglaObesidad))),
     send(Window, append, @inicio),
-
+    new(@result, label(l,'')),
+    send(Window, append, @result),
     new(BtnSalir, button('Salir', and(message(Window,destroy),message(Window,free)))),
     send(Window,display,BtnSalir, point(200,230)),
     send(Window,open_centered).
