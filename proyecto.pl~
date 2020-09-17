@@ -8,11 +8,6 @@
 :- use_module(library(pce_style_item)).
 
 resource(tabla,image,image('tablaIMC.jpeg')).
-resource(alimentacion, image, image('alimentacion.jpg')).
-resource(ejercicio, image, image('ejercicio.jpg')).
-resource(embarazo, image, image('emabarazo.jpg')).
-resource(familia, image, image('familia.jpg')).
-resource(tabaco, image, image('tabaco.jpg')).
 
 %Funcion para el redondeo de numeros decimales
 truncate(X,N,Result):- X >= 0, Result is floor(10^N*X)/10^N, !.
@@ -49,7 +44,7 @@ main:-
 
     send(Window,open_centered).
 
-%Funcion Para el calculo de IMC
+%Funcion para el calculo de IMC
 imc:-
     get(@pesoItem,selection,AuxKG),
     get(@alturaItem,selection,AuxCM),
