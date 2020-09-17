@@ -84,8 +84,33 @@ cereales integrales (como maíz, avena, trigo),\n lácteos, carnes y la poca can
     send(Op, layout, orientation:= vertical),
     send(Op, append,si), send(Op,append,no),
     send(R,append,Op),
-    new(@reglaDos,button('Siguiente',and(message(@prolog,reglaAlimentacion),message(Window,destroy),message(Window,free)))),
+    new(@reglaDos,button('Siguiente',and(message(@prolog,reglaActividad),message(Window,destroy),message(Window,free)))),
     send(Window,display,@reglaDos, point(350,300)),
+    send(Window, open_centered).
+
+%Regla de Actividad Fisica
+reglaActividad:-
+    new(Window, dialog('Actividad Fisica')),
+    send(Window, size, size(750,320)),
+    new(L, dialog_group('')),
+    new(R, dialog_group('')),
+    send(Window,append,L),
+    send(Window, append, R, right),
+    new(Preg, label(nombre, 'Se considera como actividad física cualquier movimiento corporal
+producido por los músculos que exija gasto de energía.
+Por ejemplo: correr, caminar, saltar, practicar un deporte etc.
+¿Qué tan frecuente realiza actividad física a la semana
+durante 30 minutos al día como mínimo?
+', font('times', 'roman', 14))),
+    send(R, display, Preg),
+    show_picture(L,ejercicio),
+    new(Op, menu(seleccione, marked)),
+    send(Op, layout, orientation:= vertical),
+    send(Op, append, 'ninguna vez'), send(Op,append,'1 a 3 veces por semana'),
+    send(Op,append,'3 a 5 veces por semana'), send(Op,append,'toda la semana'),
+    send(R,append,Op),
+    new(@reglaTres,button('Siguiente',and(message(@prolog,reglaActividad),message(Window,destroy),message(Window,free)))),
+    send(Window,display,@reglaTres, point(350,300)),
     send(Window, open_centered).
 
 %Definicion de la funcion principal
