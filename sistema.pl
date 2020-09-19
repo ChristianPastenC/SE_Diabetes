@@ -1,13 +1,10 @@
-% This Buffer is for notes you don't want to save.
-% If you want to create a file, visit that file with C-x C-f,
-% then enter the text in that file's own buffer.
-
-%ImportaciÃ³n de la libreria grafica
+%librerias graficas, directorio de recursos y encoding
 :- use_module(library(pce)).
-:- pce_image_directory('./assets').
 :- use_module(library(pce_style_item)).
-% :- encoding(utf8).
+:- pce_image_directory('./assets').
+:- encoding(utf8).
 
+%metodo para agragar recursos desde un directorio especifico
 resource(tabla,image,image('tabla.jpg')).
 resource(alimentacion, image, image('alimentacion2.jpg')).
 resource(actividad, image, image('actividad2.jpg')).
@@ -17,8 +14,9 @@ resource(hipertension, image, image('hiper.jpg')).
 resource(portada, image, image('inicio.jpg')).
 resource(gestacional, image, image('gestacional.jpg')).
 resource(fondo, image, image('fondo.jpg')).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%Funcion para mostrar una imagen
+%Metodo para desplegar una imagen en X ventana
 show_picture(Window, Image):-
     new(Fig, figure),
     new(Bitmap, bitmap(resource(Image),@on)),
@@ -26,9 +24,15 @@ show_picture(Window, Image):-
     send(Fig,display,Bitmap),
     send(Fig,status,1),
     send(Window,display,Fig).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%Regla para obesidad
+
+%Definicion de las reglas que usara el Sistema Experto
+
+%Primera regla
+%Primera pregunta referente a obesidad%
+%se realiza el calculo de IMC y muestra al usuario una tabla de valores%
 reglaObesidad:-
     new(Window, dialog('Indice de Masa Corporal')),
     send(Window, size, size(780,380)),
@@ -38,7 +42,7 @@ reglaObesidad:-
     send(R,size,size(420,320)),
     send(Window,append,L),
     send(Window, append, R, right),
-    new(Preg, label(nombre, 'El índice de masa corporal (IMC)\n es un indicador de gordura confiable.
+    new(Preg, label(nombre, 'El Ã­ndice de masa corporal (IMC)\n es un indicador de gordura confiable.
 Se considera que un adulto esta en sobrepeso
 si tiene un IMC de entre los 25 y 29.9 kg/m2
 y es obeso si posee un IMC superior a 30kg/m2.
@@ -48,9 +52,9 @@ y es obeso si posee un IMC superior a 30kg/m2.
     show_picture(L,tabla),
     new(@pesoItem, text_item('Peso en Kilogramos:')),
     send(R,display,@pesoItem,point(40,150)),
-    new(@alturaItem, text_item('Altura en centimetros')),
+    new(@alturaItem, text_item('Altura en centÃ­metros')),
     send(R, display, @alturaItem,point(40,180)),
-    new(@texto, label(nombre,'Su índice de masa corporal es:',font(arial,arial,13))),
+    new(@texto, label(nombre,'Su Ã­ndice de masa corporal es:',font(arial,arial,13))),
     send(R, display, @texto,point(40,230)),
     new(@indice, label(nombre,'')),
     send(R, display, @indice,point(260,230)),
@@ -63,7 +67,10 @@ y es obeso si posee un IMC superior a 30kg/m2.
     send(Window,display,@reglaUno, point(390,350)),
     send(Window, open_centered).
 
-%Funcion Para el calculo de IMC
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%Funcion para el calculo del indice de masa corporal
 imc:-
     get(@pesoItem,selection,AuxKG),
     get(@alturaItem,selection,AuxCM),
@@ -71,10 +78,13 @@ imc:-
     atom_number(AuxCM, CM),
     M is CM/100, Aux is M*M,
     send(@indice, selection((KG/Aux))).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%Regla para alimentacion
+
+%Segunda regla
+%Pregunta acerca de alimentacion%
 reglaAlimentacion:-
-    new(Window, dialog('Alimentación')),
+    new(Window, dialog('AlimentaciÃ³n')),
     send(Window, size, size(780,380)),
     new(L, dialog_group('')),
     send(L,size,size(310,340)),
@@ -82,15 +92,14 @@ reglaAlimentacion:-
     send(R,size,size(440,340)),
     send(Window,append,L),
     send(Window, append, R, right),
-    new(Preg, label(nombre, 'Una dieta sana es la combinación adecuada
+    new(Preg, label(nombre, 'Una dieta sana es la combinaciÃ³n adecuada
 de alimentos de diferentes grupos como son
-las frutas, verduras, legumbres (como lentejas
-y alubias), cereales integrales (como maíz, avena,
-trigo), lácteos, carnes y la poca cantidad de grasas
-saturadas.\n
-¿Considera que su alimentación diaria es saludable?
+las frutas, verduras, legumbres (como lentejas y alubias),
+cereales integrales (como maÃ­z, avena, trigo),
+lÃ¡cteos, carnes y la poca cantidad de grasas saturadas.\n
+Â¿Considera que su alimentaciÃ³n diaria es saludable?
 ', font('Arial', '', 14))),
-    send(R, display, Preg,point(35,35)),
+    send(R, display, Preg,point(35,50)),
     show_picture(L,alimentacion),
     new(Op, menu(seleccione, marked)),
     send(Op, layout, orientation:= vertical),
@@ -101,10 +110,12 @@ saturadas.\n
     send(@reglaDos,colour,colour('blue')),
     send(Window,display,@reglaDos, point(390,350)),
     send(Window, open_centered).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%Regla de Actividad Fisica
+%Tercera regla
+%Pregunta referente a la frecuencia de acitividad fisica realizada%
 reglaActividad:-
-    new(Window, dialog('Actividad Fisica')),
+    new(Window, dialog('Actividad FÃ­sica')),
     send(Window, size, size(780,380)),
     new(L, dialog_group('')),
     send(L,size,size(330,320)),
@@ -112,12 +123,12 @@ reglaActividad:-
     send(R,size,size(420,320)),
     send(Window,append,L),
     send(Window, append, R, right),
-    new(Preg, label(nombre, 'Se considera como actividad física cualquier
-movimiento corporal producido por los músculos
-que exija gasto de energía. Por ejemplo: correr,
+    new(Preg, label(nombre, 'Se considera como actividad fÃ­sica cualquier
+movimiento corporal producido por los mÃºsculos
+que exija gasto de energÃ­a. Por ejemplo: correr,
 caminar, saltar, practicar un deporte etc.\n
-¿Qué tan frecuente realiza actividad física a
-la semana durante 30 minutos al día como minimo?', font(arial, arial, 14))),
+Â¿QuÃ© tan frecuente realiza actividad fÃ­sica a
+la semana durante 30 minutos al dÃ­a como mÃ­nimo?', font(arial, arial, 14))),
     send(R, display, Preg,point(30,35)),
     show_picture(L,actividad),
     new(Op, menu(seleccione, marked)),
@@ -130,14 +141,19 @@ la semana durante 30 minutos al día como minimo?', font(arial, arial, 14))),
     send(@reglaTres,colour,colour('blue')),
     send(Window,display,@reglaTres, point(390,350)),
     send(Window, open_centered).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%Regla para los antescedentes familiares
+
+%Cuarta regla
+%Resultado final dados los datos anteriores
 reglaFamilia('toda la semana'):-
-    send(@result, selection('HAY POCA PROBABILIDAD\n DE QUE USTED TENGA DIABETES\n TIPO 2')),
+    send(@result, selection('HAY POCA PROBABILIDAD\n DE QUE USTED TENGA DIABETES TIPO 2')),
     clear.
+%Resultado final dados los datos anteriores
 reglaFamilia('3 a 5 veces por semana'):-
-    send(@result,selection('HAY POCA PROBABILIDAD\n DE QUE USTED TENGA DIABETES\n TIPO 2')),
+    send(@result,selection('HAY POCA PROBABILIDAD\n DE QUE USTED TENGA DIABETES TIPO 2')),
     clear.
+%Pregunta acerca de los antecedentes familiares dadas respuestas previas
 reglaFamilia('1 a 3 veces por semana'):-
     new(Window, dialog('Antecedentes Familiares')),
     send(Window, size, size(780,380)),
@@ -147,7 +163,7 @@ reglaFamilia('1 a 3 veces por semana'):-
     send(R,size,size(390,320)),
     send(Window,append,L),
     send(Window, append, R, right),
-    new(Preg, label(nombre, '¿Se le ha diagnosticado diabetes a\n alguno de sus familiares allegados
+    new(Preg, label(nombre, 'Â¿Se le ha diagnosticado diabetes a\n alguno de sus familiares allegados
 u otros parientes?', font('Arial', '', 14))),
     send(R, display, Preg,point(35,35)),
     show_picture(L,familia),
@@ -161,6 +177,7 @@ u otros parientes?', font('Arial', '', 14))),
     send(@reglaCuatro,colour,colour('blue')),
     send(Window,display,@reglaCuatro, point(390,350)),
     send(Window, open_centered).
+%Pregunta acerca de los antecedentes familiares dadas respuestas previas
 reglaFamilia('ninguna vez'):-
      new(Window, dialog('Antecedentes Familiares')),
     send(Window, size, size(780,380)),
@@ -170,7 +187,7 @@ reglaFamilia('ninguna vez'):-
     send(R,size,size(390,320)),
     send(Window,append,L),
     send(Window, append, R, right),
-    new(Preg, label(nombre, '¿Se le ha diagnosticado diabetes a\n alguno de sus familiares allegados
+    new(Preg, label(nombre, 'Â¿Se le ha diagnosticado diabetes a\n alguno de sus familiares allegados
 u otros parientes?', font('Arial', '', 14))),
     send(R, display, Preg),
     show_picture(L,familia),
@@ -184,16 +201,21 @@ u otros parientes?', font('Arial', '', 14))),
     send(@reglaCuatro,colour,colour('blue')),
     send(Window,display,@reglaCuatro, point(390,350)),
     send(Window, open_centered).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%Regla Hipertension
+
+%Quinta regla
+%Resultado final dados los datos anteriores
 reglaHipertension('si, padres, hermanos, o hijos'):-
-     send(@result, selection('PROBABLEMENTE USTED\n TIENE DIABETES TIPO 2')),
+     send(@result, selection('PROBABLEMENTE\n  USTED TIENE DIABETES TIPO 2')),
      clear.
+%Resultado final dados los datos anteriores
 reglaHipertension('si, abuelos, tios o primos'):-
      send(@result, selection('EXISTE LA PROBABILIDAD\n DE QUE USTED TENGA DIABETES TIPO 2')),
      clear.
+%Pregunta referente a padecimientos de acuerdo a respuestas previas
 reglaHipertension('no, ninguno'):-
-    new(Window, dialog('Hipertension')),
+    new(Window, dialog('HipertensiÃ³n')),
     send(Window, size, size(780,380)),
     new(L, dialog_group('')),
     send(L,size,size(400,320)),
@@ -201,7 +223,7 @@ reglaHipertension('no, ninguno'):-
     send(R,size,size(350,320)),
     send(Window,append,L),
     send(Window, append, R, right),
-    new(Preg, label(nombre, '¿Tiene la presión arterial alta?', font('Arial','',14))),
+    new(Preg, label(nombre, 'Â¿Tiene la presiÃ³n arterial alta?', font('Arial','',14))),
     send(R, display, Preg,point(30,40)),
     show_picture(L,hipertension),
     new(Op, menu(seleccione, marked)),
@@ -213,12 +235,15 @@ reglaHipertension('no, ninguno'):-
     send(@reglaCinco,colour,colour('blue')),
     send(Window,display,@reglaCinco, point(390,350)),
     send(Window, open_centered).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%Regla Embarazo
+
+%Resultado final dados los datos anteriores
 reglaEmbarazo('No'):-
     send(@result, selection('USTED PRESENTA LOS FACTORES\n COMUNES DE LA DIABETES TIPO 2,\n ES PROBABLE QUE TENGA
 ESTA ENFERMEDAD')),
     clear.
+%Pregunta referente a embarazos de acuerdo a respuestas previas
 reglaEmbarazo('Si'):-
      new(Window, dialog('Embarazo')),
     send(Window, size, size(780,380)),
@@ -228,7 +253,7 @@ reglaEmbarazo('Si'):-
     send(R,size,size(350,320)),
     send(Window,append,L),
     send(Window, append, R, right),
-    new(Preg, label(nombre, '¿Ha estado embarazada?', font('Arial', '', 14))),
+    new(Preg, label(nombre, 'Â¿Ha estado embarazada?', font('Arial', '', 14))),
     send(R, display, Preg, point(20,35)),
     show_picture(L,embarazo),
     new(Op, menu(seleccione, marked)),
@@ -240,12 +265,15 @@ reglaEmbarazo('Si'):-
     send(@reglaSeis,colour,colour('blue')),
     send(Window,display,@reglaSeis, point(390,350)),
     send(Window, open_centered).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %Regla Embarazo Gestacional
+%Resultado final dados los datos anteriores
 reglaGestacional('No'):-
      send(@result, selection('USTED PRESENTA LOS FACTORES\n COMUNES DE LA DIABETES TIPO 2,\n ES PROBABLE QUE
 TENGA ESTA ENFERMEDAD')),
      clear.
+%Pregunta referente a padecimientos de acuerdo a respuestas previas
 reglaGestacional('Si'):-
      new(Window, dialog('Diabetes Gestacional')),
     send(Window, size, size(780,380)),
@@ -255,7 +283,7 @@ reglaGestacional('Si'):-
     send(R,size,size(350,320)),
     send(Window,append,L),
     send(Window, append, R, right),
-    new(Preg, label(nombre, '¿Padeció de Diabetes Gestacional durante\n su embarazo?', font('Arial', '', 14))),
+    new(Preg, label(nombre, 'Â¿PadeciÃ³ de Diabetes Gestacional durante\n su embarazo?', font('Arial', '', 14))),
     send(R, display, Preg, point(20,35)),
     show_picture(L,gestacional),
     new(Op, menu(seleccione, marked)),
@@ -267,18 +295,21 @@ reglaGestacional('Si'):-
     send(@reglaSiete,colour,colour('blue')),
     send(Window,display,@reglaSiete, point(390,350)),
     send(Window, open_centered).
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %Caso final
+%Resultado final dados los datos anteriores
 reglaEsp('No'):-
-  send(@result, selection('USTED PRESENTA LOS FACTORES\n COMUNES DE LA DIABETES TIPO 2,\n ES PROBABLE QUE TENGA
+  send(@result, selection('USTED PRESENTA LOS FACTORES\n COMUNES DE LA DIABETES TIPO 2,\n ES PROBALE QUE TENGA
 ESTA ENFERMEDAD')),
   clear.
+%Resultado final dados los datos anteriores
 reglaEsp('Si'):-
-  send(@result, selection('USTED PRESENTA UN ALTO \n RIESGO DE TENER DIABETES TIPO 2.\n CONSULTE A SU MÉDICO')),
+  send(@result, selection('USTED PRESENTA UN ALTO \n RIESGO DE TENER DIABETES TIPO 2')),
   clear.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%Definicion de la funcion principal
+%Definicion de la funcion principal con la ventana de portada
 init:-
     new(Window, dialog('Sistema Diabetes')),
     send(Window, size, size(800,620)),
@@ -290,35 +321,27 @@ init:-
     send(R,size,size(360,600)),
 
     new(Bienvenida,label(titulo,'BIENVENIDA A SU',font(corbel,bold,20))),
-    new(Bienvenida2,label(titulo,'DIAGNÓSTICO',font(corbel,bold,20))),
+    new(Bienvenida2,label(titulo,'DIAGNÃ“STICO',font(corbel,bold,20))),
     new(Sexo,label(titulo,'Mujeres 30-40',font(arial,'',16))),
-    new(@inicio,button('Iniciar Diagnóstico', message(@prolog,reglaObesidad))),
+    new(@inicio,button('Iniciar DiagnÃ³stico', message(@prolog,reglaObesidad))),
     send(@inicio,font,font(arial,bold,14)),
-    new(Definicion,label(def,'La Diabetes es una enfermedad crónica que
-aparece cuando el páncreas no produce insulina
-suficiente o cuando el organismo no utiliza
-eficazmente la insulina que produce.
-La insulina es una hormona que regula
-el azúcar en la sangre.',font(arial,arial,13))),
-    send(Definicion,colour,colour('white')),
-
 
     show_picture(L,portada),
-    send(L,display,Definicion,point(30,450)),
     show_picture(R,fondo),
     send(R,display,Bienvenida,point(60,50)),
     send(R,display,Bienvenida2,point(85,80)),
-    send(R,display,Sexo,point(105,130)),
-    send(R, display, @inicio,point(150,550)),
-    new(@result, label(l,'Podrá consultar aquí su resultado
-al término de su prueba',font(arial,arial,14))),
+    send(R,display,Sexo,point(90,130)),
+    send(R, display, @inicio,point(140,550)),
+    new(@result, label(l,'PodrÃ¡ consultar aquÃ­ su resultado
+al tÃ©rmino de su prueba',font(arial,arial,14))),
     send(R, display, @result, point(35,300)),
     new(BtnSalir, button('Salir', and(message(Window,destroy),message(Window,free),message(@result,free)))),
     send(BtnSalir,font,font(arial,arial,14)),
-    send(R,display,BtnSalir, point(60,550)),
+    send(R,display,BtnSalir, point(50,550)),
     send(Window,open_centered).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%Funcion para limpiar variables
+%Funcion para limpiar variables globales
 clear:-
     send(@inicio,free),
     send(@alturaItem,free),send(@pesoItem,free),
@@ -327,14 +350,10 @@ clear:-
     send(@reglaTres,free),send(@reglaCuatro,free),
     send(@reglaCinco,free),send(@reglaSeis,free),
     send(@reglaSiete,free).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%llamada a la funcion principal para que se ejecute en automatico
 :-init.
-
-
-
-
-
-
 
 
 
