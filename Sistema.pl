@@ -84,12 +84,13 @@ reglaAlimentacion:-
     send(Window, append, R, right),
     new(Preg, label(nombre, 'Una dieta sana es la combinación adecuada
 de alimentos de diferentes grupos como son
-las frutas, verduras, legumbres (como lentejas y alubias),
-cereales integrales (como maíz, avena, trigo),
-lácteos, carnes y la poca cantidad de grasas saturadas.\n
+las frutas, verduras, legumbres (como lentejas
+y alubias), cereales integrales (como maíz, avena,
+trigo), lácteos, carnes y la poca cantidad de grasas
+saturadas.\n
 ¿Considera que su alimentación diaria es saludable?
 ', font('Arial', '', 14))),
-    send(R, display, Preg,point(35,50)),
+    send(R, display, Preg,point(35,35)),
     show_picture(L,alimentacion),
     new(Op, menu(seleccione, marked)),
     send(Op, layout, orientation:= vertical),
@@ -132,10 +133,10 @@ la semana durante 30 minutos al día como minimo?', font(arial, arial, 14))),
 
 %Regla para los antescedentes familiares
 reglaFamilia('toda la semana'):-
-    send(@result, selection('HAY POCA PROBABILIDAD\n DE QUE USTED TENGA DIABETES TIPO 2')),
+    send(@result, selection('HAY POCA PROBABILIDAD\n DE QUE USTED TENGA DIABETES\n TIPO 2')),
     clear.
 reglaFamilia('3 a 5 veces por semana'):-
-    send(@result,selection('HAY POCA PROBABILIDAD\n DE QUE USTED TENGA DIABETES TIPO 2')),
+    send(@result,selection('HAY POCA PROBABILIDAD\n DE QUE USTED TENGA DIABETES\n TIPO 2')),
     clear.
 reglaFamilia('1 a 3 veces por semana'):-
     new(Window, dialog('Antecedentes Familiares')),
@@ -186,7 +187,7 @@ u otros parientes?', font('Arial', '', 14))),
 
 %Regla Hipertension
 reglaHipertension('si, padres, hermanos, o hijos'):-
-     send(@result, selection('PROBABLEMENTE\n  USTED TIENE DIABETES TIPO 2')),
+     send(@result, selection('PROBABLEMENTE USTED\n TIENE DIABETES TIPO 2')),
      clear.
 reglaHipertension('si, abuelos, tios o primos'):-
      send(@result, selection('EXISTE LA PROBABILIDAD\n DE QUE USTED TENGA DIABETES TIPO 2')),
@@ -270,11 +271,11 @@ reglaGestacional('Si'):-
 
 %Caso final
 reglaEsp('No'):-
-  send(@result, selection('USTED PRESENTA LOS FACTORES\n COMUNES DE LA DIABETES TIPO 2,\n ES PROBALE QUE TENGA
+  send(@result, selection('USTED PRESENTA LOS FACTORES\n COMUNES DE LA DIABETES TIPO 2,\n ES PROBABLE QUE TENGA
 ESTA ENFERMEDAD')),
   clear.
 reglaEsp('Si'):-
-  send(@result, selection('USTED PRESENTA UN ALTO \n RIESGO DE TENER DIABETES TIPO 2')),
+  send(@result, selection('USTED PRESENTA UN ALTO \n RIESGO DE TENER DIABETES TIPO 2.\n CONSULTE A SU MÉDICO')),
   clear.
 
 %Definicion de la funcion principal
@@ -293,19 +294,28 @@ init:-
     new(Sexo,label(titulo,'Mujeres 30-40',font(arial,'',16))),
     new(@inicio,button('Iniciar Diagnóstico', message(@prolog,reglaObesidad))),
     send(@inicio,font,font(arial,bold,14)),
+    new(Definicion,label(def,'La Diabetes es una enfermedad crónica que
+aparece cuando el páncreas no produce insulina
+suficiente o cuando el organismo no utiliza
+eficazmente la insulina que produce.
+La insulina es una hormona que regula
+el azúcar en la sangre.',font(arial,arial,13))),
+    send(Definicion,colour,colour('white')),
+
 
     show_picture(L,portada),
+    send(L,display,Definicion,point(30,450)),
     show_picture(R,fondo),
     send(R,display,Bienvenida,point(60,50)),
     send(R,display,Bienvenida2,point(85,80)),
-    send(R,display,Sexo,point(90,130)),
-    send(R, display, @inicio,point(140,550)),
+    send(R,display,Sexo,point(105,130)),
+    send(R, display, @inicio,point(150,550)),
     new(@result, label(l,'Podrá consultar aquí su resultado
 al término de su prueba',font(arial,arial,14))),
     send(R, display, @result, point(35,300)),
     new(BtnSalir, button('Salir', and(message(Window,destroy),message(Window,free),message(@result,free)))),
     send(BtnSalir,font,font(arial,arial,14)),
-    send(R,display,BtnSalir, point(50,550)),
+    send(R,display,BtnSalir, point(60,550)),
     send(Window,open_centered).
 
 %Funcion para limpiar variables
