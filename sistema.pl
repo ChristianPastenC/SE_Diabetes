@@ -1,13 +1,10 @@
-% This Buffer is for notes you don't want to save.
-% If you want to create a file, visit that file with C-x C-f,
-% then enter the text in that file's own buffer.
-
-%Importación de la libreria grafica
+%librerias graficas, directorio de recursos y encoding
 :- use_module(library(pce)).
-:- pce_image_directory('./assets').
 :- use_module(library(pce_style_item)).
+:- pce_image_directory('./assets').
 :- encoding(utf8).
 
+%metodo para agragar recursos desde un directorio especifico
 resource(tabla,image,image('tabla.jpg')).
 resource(alimentacion, image, image('alimentacion2.jpg')).
 resource(actividad, image, image('actividad2.jpg')).
@@ -17,8 +14,9 @@ resource(hipertension, image, image('hiper.jpg')).
 resource(portada, image, image('inicio.jpg')).
 resource(gestacional, image, image('gestacional.jpg')).
 resource(fondo, image, image('fondo.jpg')).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%Funcion para mostrar una imagen
+%Metodo para desplegar una imagen en X ventana
 show_picture(Window, Image):-
     new(Fig, figure),
     new(Bitmap, bitmap(resource(Image),@on)),
@@ -26,9 +24,15 @@ show_picture(Window, Image):-
     send(Fig,display,Bitmap),
     send(Fig,status,1),
     send(Window,display,Fig).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%Regla para obesidad
+
+%Definicion de las reglas que usara el Sistema Experto
+
+%Primera regla
+%Primera pregunta referente a obesidad%
+%se realiza el calculo de IMC y muestra al usuario una tabla de valores%
 reglaObesidad:-
     new(Window, dialog('Indice de Masa Corporal')),
     send(Window, size, size(780,380)),
@@ -63,7 +67,10 @@ y es obeso si posee un IMC superior a 30kg/m2.
     send(Window,display,@reglaUno, point(390,350)),
     send(Window, open_centered).
 
-%Funcion Para el calculo de IMC
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%Funcion para el calculo del indice de masa corporal
 imc:-
     get(@pesoItem,selection,AuxKG),
     get(@alturaItem,selection,AuxCM),
@@ -71,8 +78,11 @@ imc:-
     atom_number(AuxCM, CM),
     M is CM/100, Aux is M*M,
     send(@indice, selection((KG/Aux))).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%Regla para alimentacion
+
+%Segunda regla
+%Pregunta acerca de alimentacion%
 reglaAlimentacion:-
     new(Window, dialog('Alimentación')),
     send(Window, size, size(780,380)),
@@ -100,8 +110,10 @@ lácteos, carnes y la poca cantidad de grasas saturadas.\n
     send(@reglaDos,colour,colour('blue')),
     send(Window,display,@reglaDos, point(390,350)),
     send(Window, open_centered).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%Regla de Actividad Fisica
+%Tercera regla
+%Pregunta referente a la frecuencia de acitividad fisica realizada%
 reglaActividad:-
     new(Window, dialog('Actividad Física')),
     send(Window, size, size(780,380)),
@@ -129,14 +141,19 @@ la semana durante 30 minutos al día como mínimo?', font(arial, arial, 14))),
     send(@reglaTres,colour,colour('blue')),
     send(Window,display,@reglaTres, point(390,350)),
     send(Window, open_centered).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%Regla para los antescedentes familiares
+
+%Cuarta regla
+%Resultado final dados los datos anteriores
 reglaFamilia('toda la semana'):-
     send(@result, selection('HAY POCA PROBABILIDAD\n DE QUE USTED TENGA DIABETES TIPO 2')),
     clear.
+%Resultado final dados los datos anteriores
 reglaFamilia('3 a 5 veces por semana'):-
     send(@result,selection('HAY POCA PROBABILIDAD\n DE QUE USTED TENGA DIABETES TIPO 2')),
     clear.
+%Pregunta acerca de los antecedentes familiares dadas respuestas previas
 reglaFamilia('1 a 3 veces por semana'):-
     new(Window, dialog('Antecedentes Familiares')),
     send(Window, size, size(780,380)),
@@ -160,6 +177,7 @@ u otros parientes?', font('Arial', '', 14))),
     send(@reglaCuatro,colour,colour('blue')),
     send(Window,display,@reglaCuatro, point(390,350)),
     send(Window, open_centered).
+%Pregunta acerca de los antecedentes familiares dadas respuestas previas
 reglaFamilia('ninguna vez'):-
      new(Window, dialog('Antecedentes Familiares')),
     send(Window, size, size(780,380)),
@@ -183,14 +201,19 @@ u otros parientes?', font('Arial', '', 14))),
     send(@reglaCuatro,colour,colour('blue')),
     send(Window,display,@reglaCuatro, point(390,350)),
     send(Window, open_centered).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%Regla Hipertension
+
+%Quinta regla
+%Resultado final dados los datos anteriores
 reglaHipertension('si, padres, hermanos, o hijos'):-
      send(@result, selection('PROBABLEMENTE\n  USTED TIENE DIABETES TIPO 2')),
      clear.
+%Resultado final dados los datos anteriores
 reglaHipertension('si, abuelos, tios o primos'):-
      send(@result, selection('EXISTE LA PROBABILIDAD\n DE QUE USTED TENGA DIABETES TIPO 2')),
      clear.
+%Pregunta referente a padecimientos de acuerdo a respuestas previas
 reglaHipertension('no, ninguno'):-
     new(Window, dialog('Hipertensión')),
     send(Window, size, size(780,380)),
@@ -212,12 +235,15 @@ reglaHipertension('no, ninguno'):-
     send(@reglaCinco,colour,colour('blue')),
     send(Window,display,@reglaCinco, point(390,350)),
     send(Window, open_centered).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%Regla Embarazo
+
+%Resultado final dados los datos anteriores
 reglaEmbarazo('No'):-
     send(@result, selection('USTED PRESENTA LOS FACTORES\n COMUNES DE LA DIABETES TIPO 2,\n ES PROBABLE QUE TENGA
 ESTA ENFERMEDAD')),
     clear.
+%Pregunta referente a embarazos de acuerdo a respuestas previas
 reglaEmbarazo('Si'):-
      new(Window, dialog('Embarazo')),
     send(Window, size, size(780,380)),
@@ -239,12 +265,15 @@ reglaEmbarazo('Si'):-
     send(@reglaSeis,colour,colour('blue')),
     send(Window,display,@reglaSeis, point(390,350)),
     send(Window, open_centered).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %Regla Embarazo Gestacional
+%Resultado final dados los datos anteriores
 reglaGestacional('No'):-
      send(@result, selection('USTED PRESENTA LOS FACTORES\n COMUNES DE LA DIABETES TIPO 2,\n ES PROBABLE QUE
 TENGA ESTA ENFERMEDAD')),
      clear.
+%Pregunta referente a padecimientos de acuerdo a respuestas previas
 reglaGestacional('Si'):-
      new(Window, dialog('Diabetes Gestacional')),
     send(Window, size, size(780,380)),
@@ -266,18 +295,21 @@ reglaGestacional('Si'):-
     send(@reglaSiete,colour,colour('blue')),
     send(Window,display,@reglaSiete, point(390,350)),
     send(Window, open_centered).
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %Caso final
+%Resultado final dados los datos anteriores
 reglaEsp('No'):-
   send(@result, selection('USTED PRESENTA LOS FACTORES\n COMUNES DE LA DIABETES TIPO 2,\n ES PROBALE QUE TENGA
 ESTA ENFERMEDAD')),
   clear.
+%Resultado final dados los datos anteriores
 reglaEsp('Si'):-
   send(@result, selection('USTED PRESENTA UN ALTO \n RIESGO DE TENER DIABETES TIPO 2')),
   clear.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%Definicion de la funcion principal
+%Definicion de la funcion principal con la ventana de portada
 init:-
     new(Window, dialog('Sistema Diabetes')),
     send(Window, size, size(800,620)),
@@ -307,8 +339,9 @@ al término de su prueba',font(arial,arial,14))),
     send(BtnSalir,font,font(arial,arial,14)),
     send(R,display,BtnSalir, point(50,550)),
     send(Window,open_centered).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%Funcion para limpiar variables
+%Funcion para limpiar variables globales
 clear:-
     send(@inicio,free),
     send(@alturaItem,free),send(@pesoItem,free),
@@ -317,7 +350,9 @@ clear:-
     send(@reglaTres,free),send(@reglaCuatro,free),
     send(@reglaCinco,free),send(@reglaSeis,free),
     send(@reglaSiete,free).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%llamada a la funcion principal para que se ejecute en automatico
 :-init.
 
 
